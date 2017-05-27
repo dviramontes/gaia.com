@@ -5,7 +5,7 @@ const external = [];
 
 export default {
     entry: 'src/index.js',
-    format: 'umd',
+    format: 'cjs',
     external,
     plugins: [
         eslint(),
@@ -13,5 +13,5 @@ export default {
             exclude: 'node_modules/**',
         })
     ],
-    dest: 'dist/server.umd.js',
+    dest: 'dist/server.cjs.js',
 }
