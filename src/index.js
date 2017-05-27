@@ -6,27 +6,27 @@ import request from 'request-promise';
 
 const app = express();
 const PORT = 4000;
-const TID0 = 26681;
-// const TID1 = 26686;
 
 app.use(bodyParser.json());
 app.use(cors());
 
-// ENDPOINTS:
-// 1. http://d6api.gaia.com/vocabulary/1/{tid}
-// 2. http://d6api.gaia.com/videos/term/{tid}
-// 3. http://d6api.gaia.com/media/{previewNid}
+// TODO:
+// [x]- fetch http://d6api.gaia.com/vocabulary/1/{tid}
+// [ ]- http://d6api.gaia.com/videos/term/{tid}
+// [ ]- http://d6api.gaia.com/media/{previewNid}
 
-const options = {
-  url: `http://d6api.gaia.com/vocabulary/1/${TID0}`,
-  headers: {
-    Accept: 'application/json',
-  },
+function formatRequestOptions(tid = 26681) {
+ return {
+   url: `http://d6api.gaia.com/vocabulary/1/${tid}`,
+   headers: {
+     Accept: 'application/json',
+   },
+ };
 }
 
-async function firstRequest() {
+async function fetchVocabulary(tid) {
   try {
-    const res = await request(options);
+    const res = await request(formatRequestOptions(tid));
     const { terms } = JSON.parse(res);
     return terms;
   } catch (e) {
@@ -34,10 +34,14 @@ async function firstRequest() {
   }
 }
 
-app.get('/',  (req, res) => {
-  return firstRequest().then(data => {
-    res.status(200).json(data);
-  });
+app.get('/terms/:tid/longest-preview-media-url', async (req, res) => {
+  try {
+    const tid = req.params.tid;
+    const terms = await fetchVocabulary(tid);
+    res.status(200).json(terms);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 app.listen(PORT);
