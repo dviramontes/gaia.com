@@ -61,4 +61,4 @@ typings/
 
 # generated files
 dist
-public
+!dist/.gitkeep
