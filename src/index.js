@@ -3,6 +3,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import request from 'request-promise';
+import first from 'lodash.first';
+import has from 'lodash.has';
 
 const app = express();
 const PORT = 4000;
@@ -12,21 +14,34 @@ app.use(cors());
 
 // TODO:
 // [x]- fetch http://d6api.gaia.com/vocabulary/1/{tid}
-// [ ]- http://d6api.gaia.com/videos/term/{tid}
+// [x]- http://d6api.gaia.com/videos/term/{tid}
 // [ ]- http://d6api.gaia.com/media/{previewNid}
+// [ ]- add readme
+// [ ]- add tests
 
-function formatRequestOptions(tid = 26681) {
- return {
-   url: `http://d6api.gaia.com/vocabulary/1/${tid}`,
-   headers: {
-     Accept: 'application/json',
-   },
- };
+function formatRequestOptions(type, tid = 26681) {
+  let url = null;
+  switch (type) {
+    case 'vocab':
+      url = `http://d6api.gaia.com/vocabulary/1/${tid}`;
+      break;
+    case 'term':
+      url = `http://d6api.gaia.com/videos/term/${tid}`;
+      break
+    default:
+      break;
+  }
+  return {
+    url,
+    headers: {
+      Accept: 'application/json',
+    },
+  };
 }
 
 async function fetchVocabulary(tid) {
   try {
-    const res = await request(formatRequestOptions(tid));
+    const res = await request(formatRequestOptions('vocab', tid));
     const { terms } = JSON.parse(res);
     return terms;
   } catch (e) {
@@ -34,11 +49,35 @@ async function fetchVocabulary(tid) {
   }
 }
 
+async function fetchTerm(tid) {
+  try {
+    const res = await request(formatRequestOptions('term', tid));
+    return JSON.parse(res);
+  } catch (e) {
+    throw e;
+  }
+}
+
+function findLongestDurationTitle(titles) {
+  const withPreviews = titles.filter(title => has(title, 'preview'));
+  const longestDurationValue = withPreviews
+    .map(title => +title.preview.duration)
+    .reduce((a, b) => {
+      return Math.max(a, b);
+    });
+  const titleWithLongestDuration = withPreviews
+    .find(title => +title.preview.duration === longestDurationValue);
+  return titleWithLongestDuration;
+}
+
 app.get('/terms/:tid/longest-preview-media-url', async (req, res) => {
   try {
-    const tid = req.params.tid;
-    const terms = await fetchVocabulary(tid);
-    res.status(200).json(terms);
+    const tidParam = req.params.tid;
+    const terms = await fetchVocabulary(tidParam);
+    const { tid } = first(terms);
+    const { titles } = await fetchTerm(tid);
+    const longestTitle = findLongestDurationTitle(titles);
+    res.status(200).json(longestTitle);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
