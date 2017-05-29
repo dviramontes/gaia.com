@@ -12,13 +12,6 @@ const PORT = 4000;
 app.use(bodyParser.json());
 app.use(cors());
 
-// TODO:
-// [x]- fetch http://d6api.gaia.com/vocabulary/1/{tid}
-// [x]- http://d6api.gaia.com/videos/term/{tid}
-// [x]- http://d6api.gaia.com/media/{previewNid}
-// [x]- add readme
-// [ ]- add tests
-
 function formatRequestOptions(type, id = 26681) {
   let url = null;
   switch (type) {
