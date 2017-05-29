@@ -26,3 +26,7 @@ Server runs on **localhost:4000**
 ## Development:
 
 `npm run dev`
+
+## Building Production Bundle:
+
+`npm run build`
