@@ -16,7 +16,7 @@ app.use(cors());
 // [x]- fetch http://d6api.gaia.com/vocabulary/1/{tid}
 // [x]- http://d6api.gaia.com/videos/term/{tid}
 // [x]- http://d6api.gaia.com/media/{previewNid}
-// [ ]- add readme
+// [x]- add readme
 // [ ]- add tests
 
 function formatRequestOptions(type, id = 26681) {
@@ -39,13 +39,14 @@ function formatRequestOptions(type, id = 26681) {
     headers: {
       Accept: 'application/json',
     },
+    json: true,
   };
 }
 
 async function fetchVocabulary(tid) {
   try {
     const res = await request(formatRequestOptions('vocab', tid));
-    const { terms } = JSON.parse(res);
+    const { terms } = res;
     return terms;
   } catch (e) {
     throw e;
@@ -55,7 +56,7 @@ async function fetchVocabulary(tid) {
 async function fetchTerm(tid) {
   try {
     const res = await request(formatRequestOptions('term', tid));
-    return JSON.parse(res);
+    return res;
   } catch (e) {
     throw e;
   }
@@ -64,7 +65,7 @@ async function fetchTerm(tid) {
 async function fetchMedia(nid) {
   try {
     const res = await request(formatRequestOptions('media', nid));
-    return JSON.parse(res);
+    return res;
   } catch (e) {
     throw e;
   }
