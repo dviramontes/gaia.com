@@ -3,7 +3,7 @@ import supertest from 'supertest';
 import server from '../src/server';
 // import expect from 'expect';
 
-describe('Server A PI', () => {
+describe('Server API', () => {
 
   it('should respond to api/employees/ids request with list of ids', (done) => {
     const tid = 123;
