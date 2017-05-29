@@ -12,7 +12,7 @@ const PORT = 4000;
 app.use(bodyParser.json());
 app.use(cors());
 
-function formatRequestOptions(type, id = 26681) {
+function formatRequestOptions(type, id) {
   let url = null;
   switch (type) {
     case 'vocab':
