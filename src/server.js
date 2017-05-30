@@ -92,3 +92,5 @@ app.get('/terms/:tid/longest-preview-media-url', async (req, res) => {
 });
 
 app.listen(PORT);
+
+export default app;
