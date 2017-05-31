@@ -1,5 +1,8 @@
 # gaia.com code-exercise API
 
+## TODO:
+- fix es6 test setup
+
 ## Endpoints:
 
 ### Longest Preview Media URL:
@@ -13,7 +16,7 @@
 	
 	`nvm use v7`
 
-## Running:
+## Setup:
 
 `npm install`
 
